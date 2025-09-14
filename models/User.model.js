@@ -1,47 +1,35 @@
 const { Schema, model } = require("mongoose");
+const bcrypt = require("bcrypt");
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: [true, 'Name is required.'],
-      trim: true
-    },
-    surname: {
-      type: String,
-      required: [true, 'Surname is required.'],
-      trim: true
-    },
-    sexo: {
-      type: String,
-      enum: ['Male', 'Female'],
-      required: [true, 'Country is required.']
-    },
-    country: {
-      type: String,
-      required: [true, 'Country is required.'],
-      trim: true
-    },
-     username: {
-      type: String,
-      required: [true, 'Username is required.'],
-      unique: true,
-      trim: true,
-      minlength: [ 3, 'Username must be at least 3 characters long.']
-     },
-    email: {
+    name: { type: String, required: true, trim: true },
+    surname: { type: String, required: true, trim: true },
+    gender: { 
+      type: String, 
+      enum: ['male', 'female', 'other'], 
+      required: true },
+    country: { type: String, trim: true },
+    username: {
       type: String,
       required: [true, 'Email is required.'],
       unique: true,
       lowercase: true,
       trim: true,
-      match:  [/.+@.+\..+/, 'Please enter a valid email address.']
+      minLength: 3,
+      maxLength: 32,
     },
-    password: {
+    email: { 
+      type: String, 
+      required: true, 
+      unique: true, 
+      lowercase: true,
+       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address.'] },
+    password: { type: String, required: true, minLength: 6 },
+    profilePic: {
       type: String,
-      required: [true, 'Password is required.'],
-      minlength: [6, 'Password must be at least 6 characters long.']
+      default: "/images/icono_profile.png",
     }
   },
   {
@@ -49,6 +37,19 @@ const userSchema = new Schema(
     timestamps: true
   }
 );
+
+// Hash password before saving
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+userSchema.methods.comparePassword = async function (candidate) {
+  return bcrypt.compare(candidate, this.password);
+};
+
 
 const User = model("User", userSchema);
 
