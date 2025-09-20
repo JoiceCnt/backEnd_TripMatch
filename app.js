@@ -7,10 +7,6 @@ const cors = require("cors");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 
-
-//import middlewares
-const { errorHandler } = require("./error-handling/index");
-
 //import routes
 const indexRoutes = require("./routes/index.routes");
 const authRoutes = require("./routes/authRoute");
@@ -20,6 +16,9 @@ const postRoutes = require("./routes/postsRoute");
 const locationRoutes = require("./routes/locationsRoute");
 
 const app = express();
+
+//import middlewares
+const { notFoundHandler, errorHandler } = require("./error-handling/index");
 
 //general middlewares
 app.use(helmet());
@@ -42,6 +41,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/locations", locationRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
+app.use(notFoundHandler);
 app.use(errorHandler);
 
 module.exports = app;

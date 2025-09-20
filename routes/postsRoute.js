@@ -1,7 +1,7 @@
 const express = require('express');
 const isAuth = require('../middlewares/isAuth');
 const { createPost, updatePost, deletePost, listPosts, createResponse } = require('../controllers/postController');
-const Post = require('../models/Post');
+const Post = require('../models/Post.model');
 const isOwner = require('../middlewares/isOwner');
 
 const router = express.Router();

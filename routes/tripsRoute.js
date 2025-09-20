@@ -1,7 +1,7 @@
 const express = require('express');
 const isAuth = require('../middlewares/isAuth');
 const { createTrip, searchTrips, matchTrips, topTrips } = require('../controllers/tripController');
-const Trip = require('../models/Trip');
+const Trip = require('../models/Trip.model');
 const isOwner = require('../middlewares/isOwner');
 
 const router = express.Router();

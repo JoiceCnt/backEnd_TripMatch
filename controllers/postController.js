@@ -1,5 +1,5 @@
-const Post = require('../models/Post');
-const Response = require('../models/Response');
+const Post = require('../models/Post.model');
+const Response = require('../models/Response.model');
 
 const createPost = async (req, res, next) => {
   try {
