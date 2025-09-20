@@ -11,7 +11,7 @@ const createTrip = async (req, res, next) => {
     }
 };
 
-const searchTrips = async (req, res, next) => {
+const getTrips = async (req, res, next) => {
     try {
         const { city, countryCode, startDate, endDate, preference, page = 1, limit = 20 } = req.query;
         const filters = {};
@@ -34,6 +34,16 @@ const searchTrips = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
+};
+
+const getTripById = async (req, res, next) => {
+  try {
+    const trip = await Trip.findById(req.params.id);
+    if (!trip) return res.status(404).json({ message: "Trip not found" });
+    res.json(trip);
+  } catch (error) {
+    next(error);
+  }
 };
 
 //simple matching: find trips in the same city with overlapping dates and shared
@@ -75,7 +85,8 @@ const topTrips = async (req, res, next) => {
 
 module.exports = {
   createTrip,
-  searchTrips,
+  getTrips,
+  getTripById,
   matchTrips,
   topTrips
 };

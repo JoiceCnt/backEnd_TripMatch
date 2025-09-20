@@ -1,14 +1,15 @@
 const express = require('express');
 const isAuth = require('../middlewares/isAuth');
-const { createTrip, searchTrips, matchTrips, topTrips } = require('../controllers/tripController');
+const { createTrip, getTrips, getTripById, matchTrips, topTrips } = require('../controllers/tripController');
 const Trip = require('../models/Trip.model');
 const isOwner = require('../middlewares/isOwner');
 
 const router = express.Router();
 
 router.post('/', isAuth, createTrip);
-router.get('/', searchTrips);
+router.get('/', getTrips);
 router.get('/top', topTrips);
+router.get("/:id", getTripById);
 router.get('/:id/match', matchTrips);
 
 // update/delete endpoints example

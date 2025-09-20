@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const { Schema, model } = require('mongoose');
 
 
-const postSchema = new Schema(
+const feedPostSchema = new Schema(
     {
         title: { type: String, required: true },
-        content: { type: String, required: true },
+        comment: { type: String },
         author: { 
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'User', 
@@ -13,13 +13,32 @@ const postSchema = new Schema(
         trip: { 
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'Trip', 
-            required: true }
+            required: true },
+        includePreferences: { type: Boolean, default: true},
+        snapshot: {
+            title: String,
+            city: String,
+            country: String,
+            startDate: Date,
+            endDate: Date,
+            preferences: [String],
+            heroImageUrl: String,
+        },
+        visibility: { type: String, enum: ["public", "friends", "private"], default: "public" },
+        likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        comments: [{
+            user: { type: Schema.Types.ObjectId, ref: "User" },
+            text: String,
+            createdAt: { type: Date, default: Date.now }
+            }],
     },
     {
         timestamps: true
     }
 );
 
-const Post = model("Post", postSchema);
+feedPostSchema.index({ author: 1, createdAt: -1 });
 
-module.exports = Post;
+const feedPost = model("feedPost", feedPostSchema);
+
+module.exports = feedPost;
