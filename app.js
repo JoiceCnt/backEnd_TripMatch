@@ -1,24 +1,47 @@
 // ℹ️ Gets access to environment variables/settings
 // https://www.npmjs.com/package/dotenv
 require("dotenv").config();
+const express = require("express"); //connects to DB
+const helmet = require("helmet");
+const cors = require("cors");
+const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
 
-// ℹ️ Connects to the database
-require("./db");
 
-// Handles http requests (express is node js framework)
-// https://www.npmjs.com/package/express
-const express = require("express");
+//import middlewares
+const { errorHandler } = require("./error-handling/index");
+
+//import routes
+const indexRoutes = require("./routes/index.routes");
+const authRoutes = require("./routes/authRoute");
+const userRoutes = require("./routes/usersRoute");
+const tripRoutes = require("./routes/tripsRoute");
+const postRoutes = require("./routes/postsRoute");
+const locationRoutes = require("./routes/locationsRoute");
 
 const app = express();
 
-// ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
-require("./config")(app);
+//general middlewares
+app.use(helmet());
+app.use(cors());
+app.use(express.json());
+app.use(morgan("dev"));
+
+// rate limiting
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+app.use(limiter);
+
+
 
 // 👇 Start handling routes here
-const indexRoutes = require("./routes/index.routes");
 app.use("/api", indexRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/trips", tripRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/locations", locationRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
-require("./error-handling")(app);
+app.use(errorHandler);
 
 module.exports = app;

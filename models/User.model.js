@@ -6,6 +6,7 @@ const userSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
     surname: { type: String, required: true, trim: true },
+    bio: { type: String, trim: true},
     gender: { 
       type: String, 
       enum: ['male', 'female', 'other'], 
@@ -13,7 +14,7 @@ const userSchema = new Schema(
     country: { type: String, trim: true },
     username: {
       type: String,
-      required: [true, 'Email is required.'],
+      required: [true, 'Usermane is required.'],
       unique: true,
       lowercase: true,
       trim: true,

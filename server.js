@@ -1,12 +1,22 @@
 //server.js
 require("dotenv").config();
-require("./config/index");
-
+const mongoose = require("mongoose");
 const app = require("./app");
 
-// ℹ️ Sets the PORT for our app to have access to it. If no env has been set, we hard code it to 5005
-const PORT = process.env.PORT || 3000;
+// connect DB
+const MONGO_URI = process.env.MONGO_URI;
 
-app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
-});
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    console.log("✅ Conected to MongoDB Atlas");
+
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Database connection error:", err);
+    process.exit(1);
+  });

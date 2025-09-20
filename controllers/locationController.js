@@ -1,6 +1,6 @@
-import axios from "axios";
+const axios = require("axios");
 
-export const getCountries = async (req, res) => {
+const getCountries = async (req, res) => {
   try {
     const response = await axios.get(
       `${process.env.EXTERNAL_API_BASE}/countries`,
@@ -17,3 +17,5 @@ export const getCountries = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch countries" });
   }
 };
+
+module.exports = { getCountries };

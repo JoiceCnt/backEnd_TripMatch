@@ -4,7 +4,7 @@ const tripSchema = new Schema (
     {
         title: { type: String, required: true},
         description: { type: String },
-        preferences: [{
+        activities: [{
             type: String,
             enum: ['nature', 'concerts_and_events', 'gastronomy', 'touristic_places']
         }],
@@ -19,8 +19,7 @@ const tripSchema = new Schema (
         participants: [{ 
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'User'
-        }],
-        maxParticipants: { type: Number, default: 10},
+        }]
     },
     {   
         timestamps: true
