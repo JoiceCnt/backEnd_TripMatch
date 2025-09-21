@@ -2,7 +2,7 @@ const Trip = require('../models/Trip.model.js');
 
 const createTrip = async (req, res, next) => {
     try {
-        const data = { ...req.body, createdBy: req.user._id };
+        const data = { ...req.body, createdBy: "650c3df58c5c123456789abc" };
         const trip = new Trip(data);
         await trip.save();
         res.status(201).json(trip);

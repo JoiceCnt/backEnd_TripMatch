@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../models/User.model");
 const isAuth = require("../middlewares/isAuth");
 const isOwner = require("../middlewares/isOwner");
+const userController = require("../controllers/userController");
 
 const router = express.Router();
 
@@ -39,7 +40,23 @@ router.get("/:id", isAuth, async (req, res, next) => {
 router.put("/:id", isAuth, isOwner(User, "_id", "id"), async (req, res, next) => {
   try {
     const updates = req.body;
+
     if (updates.password) delete updates.password; // no actualizar password aquí
+
+     // Convertir preferences (objeto → array)
+    if (updates.preferences) {
+      const prefsObj = typeof updates.preferences === "string" ? JSON.parse(updates.preferences) : updates.preferences;
+      updates.preferences = Object.keys(prefsObj).filter((key) => prefsObj[key]);
+    }
+
+    // Convertir favoriteCities (string → array)
+    if (updates.favoriteCities) {
+      updates.favoriteCities = updates.favoriteCities
+        .split(",")
+        .map((c) => c.trim())
+        .filter((c) => c.length > 0);
+    }
+
     const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true }).select("-password");
     res.json(user);
   } catch (err) {
@@ -56,5 +73,12 @@ router.delete("/:id", isAuth, isOwner(User, "_id", "id"), async (req, res, next)
     next(err);
   }
 });
+
+// GET /api/users/me/settings
+router.get("/me/settings", isAuth, userController.getSettings);
+
+// PUT /api/users/me/settings
+router.put("/me/settings", isAuth, userController.updateSettings);
+
 
 module.exports = router;

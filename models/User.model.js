@@ -6,14 +6,6 @@ const bcrypt = require("bcrypt");
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
-    name: { type: String, required: true, trim: true },
-    surname: { type: String, required: true, trim: true },
-    bio: { type: String, trim: true},
-    gender: { 
-      type: String, 
-      enum: ['male', 'female', 'other'], 
-      required: true },
-    country: { type: String, trim: true },
     username: {
       type: String,
       required: [true, 'Usermane is required.'],
@@ -28,15 +20,48 @@ const userSchema = new Schema(
       required: true, 
       unique: true, 
       lowercase: true,
-       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address.'] },
-    password: { type: String, required: true, minLength: 6 },
+      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address.'] 
+    },
+    password: { type: String, required: true, minLength: 6 },  
+
+    name: { type: String, required: true },
+    surname: { type: String, required: true },
+    bio: { type: String, maxlength: 500 },
+    gender: { 
+      type: String, 
+      enum: ['male', 'female', 'other'], 
+      required: true },
+    country: { type: String, trim: true },
+
     profilePic: {
       type: String,
       default: "/images/icono_profile.png",
+    },
+    photoUrl: { type: String },             
+    photoPublicId: { type: String },
+    preferences: [
+      {
+        type: String,
+        enum: ["nature", "concerts_and_events", "gastronomy", "touristic_places"],
+      },
+    ],
+    favoriteCities: [{ type: String }],
+
+
+    tripsCreated: [{ type: Schema.Types.ObjectId, ref: "Trip" }],
+    tripsJoined: [{ type: Schema.Types.ObjectId, ref: "Trip" }],
+
+    settings: {
+      theme: { type: String, enum: ["light", "dark"], default: light },
+      lang: { type: String, enum: ["en", "pt", "es"], default: "en"},
+      emailNotif: { type: Boolean, default: true },
+      inAppNotif: { type: Boolean, default: true },
+      isPublicProfile: { type: Boolean, default: true },
+      postVisibility: { type: String, enum: ["everyone", "friends", "private"], default: "everyone"},
+      twoFA: { type: Boolean, default: false}
     }
   },
-  {
-    // this second object adds extra properties: `createdAt` and `updatedAt`    
+  {    
     timestamps: true
   }
 );
