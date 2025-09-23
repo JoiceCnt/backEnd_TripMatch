@@ -1,5 +1,5 @@
 const User = require('../models/User.model.js');
-const signToken = require('../utils/jwt.js');
+const { signToken } = require('../utils/jwt.js');
 
 const register = async (req, res, next) => {
   try {
@@ -39,7 +39,7 @@ const register = async (req, res, next) => {
             surname: user.surname,
             country: user.country,
             gender: user.gender,
-            preferences: user.preference
+            preferences: user.preferences
         }
     });
   } catch (err) {

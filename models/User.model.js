@@ -52,7 +52,7 @@ const userSchema = new Schema(
     tripsJoined: [{ type: Schema.Types.ObjectId, ref: "Trip" }],
 
     settings: {
-      theme: { type: String, enum: ["light", "dark"], default: light },
+      theme: { type: String, enum: ["light", "dark"], default: "light" },
       lang: { type: String, enum: ["en", "pt", "es"], default: "en"},
       emailNotif: { type: Boolean, default: true },
       inAppNotif: { type: Boolean, default: true },
