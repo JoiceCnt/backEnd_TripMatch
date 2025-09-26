@@ -1,33 +1,28 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const {
+  createPost,
+  listPosts,
+  updatePost,
+  deletePost,
+  toggleLike,
+  addComment,
+  deleteComment,
+  listComments,
+} = require("../controllers/postController");
 
-const isAuth = require('../middlewares/isAuth');
-const isOwner = require('../middlewares/isOwner');
+// Posts
+router.get("/", listPosts);
+router.post("/", createPost);
+router.put("/:id", updatePost);
+router.delete("/:id", deletePost);
 
-const { 
-    createPost, 
-    updatePost, 
-    deletePost, 
-    listPosts, 
-    createResponse 
-} = require('../controllers/postController');
+// Likes
+router.post("/:postId/like", toggleLike);
 
-const { addLike, removeLike } = require('../controllers/likeController');
-const { addComment, deleteComment } = require('../controllers/commentController');
-
-const Post = require('../models/Post.model');
-
-router.get('/', listPosts);
-router.post('/', isAuth, createPost);
-router.put('/:id', isAuth, isOwner(Post, 'author', 'id'), updatePost);
-router.delete('/:id', isAuth, isOwner(Post, 'author', 'id'), deletePost);
-router.post('/:postId/responses', isAuth, createResponse);
-
-router.post('/:postId/like', isAuth, addLike);     
-router.delete('/:postId/like', isAuth, removeLike);
-
-router.post('/:postId/comment', isAuth, addComment); 
-router.delete('/:postId/comment/:commentId', isAuth, deleteComment);  
-
+// Comments
+router.post("/:postId/comments", addComment);
+router.delete("/:postId/comments/:commentId", deleteComment);
+router.get("/:postId/comments", listComments);
 
 module.exports = router;

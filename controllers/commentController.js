@@ -1,6 +1,6 @@
 const Post = require('../models/Post.model');
 
-// Añadir comentario
+// Añadir comentario a un post
 const addComment = async (req, res) => {
   try {
     const { text } = req.body;
@@ -8,7 +8,7 @@ const addComment = async (req, res) => {
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
     const comment = {
-      user: req.user._id,
+      user: req.user?._id || "test-user", // temporal si no hay auth
       text,
       createdAt: new Date(),
     };
@@ -22,7 +22,7 @@ const addComment = async (req, res) => {
   }
 };
 
-// Eliminar comentario
+// Eliminar comentario de un post
 const deleteComment = async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
@@ -39,4 +39,16 @@ const deleteComment = async (req, res) => {
   }
 };
 
-module.exports = { addComment, deleteComment };
+// Listar todos los comentarios de un post
+const listComments = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId).select('comments');
+    if (!post) return res.status(404).json({ message: 'Post not found' });
+
+    res.status(200).json({ comments: post.comments });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { addComment, deleteComment, listComments };
