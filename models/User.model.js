@@ -1,74 +1,82 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
-
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
-    username: {
+    name: {
       type: String,
-      required: [true, 'Usermane is required.'],
+      required: [true, "Usermane is required."],
       unique: true,
       lowercase: true,
       trim: true,
       minLength: 3,
       maxLength: 32,
     },
-    email: { 
-      type: String, 
-      required: true, 
-      unique: true, 
+    email: {
+      type: String,
+      required: true,
+      unique: true,
       lowercase: true,
-      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address.'] 
+      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address."],
     },
-    password: { type: String, required: true, minLength: 6 },  
+    password: { type: String, required: true, minLength: 6 },
 
-    name: { type: String, required: true },
-    surname: { type: String, required: true },
+    name: { type: String, required: false },
+    surname: { type: String, required: false },
     bio: { type: String, maxlength: 500 },
-    gender: { 
-      type: String, 
-      enum: ['male', 'female', 'other'], 
-      required: true },
-    country: { type: String, trim: true },
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+      required: false,
+    },
+    country: { type: String, trim: false },
 
     profilePic: {
       type: String,
       default: "/images/icono_profile.png",
     },
-    photoUrl: { type: String },             
+    photoUrl: { type: String },
     photoPublicId: { type: String },
     preferences: [
       {
         type: String,
-        enum: ["nature", "concerts_and_events", "gastronomy", "touristic_places"],
+        enum: [
+          "nature",
+          "concerts_and_events",
+          "gastronomy",
+          "touristic_places",
+        ],
       },
     ],
     favoriteCities: [{ type: String }],
-
 
     tripsCreated: [{ type: Schema.Types.ObjectId, ref: "Trip" }],
     tripsJoined: [{ type: Schema.Types.ObjectId, ref: "Trip" }],
 
     settings: {
       theme: { type: String, enum: ["light", "dark"], default: "light" },
-      lang: { type: String, enum: ["en", "pt", "es"], default: "en"},
+      lang: { type: String, enum: ["en", "pt", "es"], default: "en" },
       emailNotif: { type: Boolean, default: true },
       inAppNotif: { type: Boolean, default: true },
       isPublicProfile: { type: Boolean, default: true },
-      postVisibility: { type: String, enum: ["everyone", "friends", "private"], default: "everyone"},
-      twoFA: { type: Boolean, default: false}
-    }
+      postVisibility: {
+        type: String,
+        enum: ["everyone", "friends", "private"],
+        default: "everyone",
+      },
+      twoFA: { type: Boolean, default: false },
+    },
   },
-  {    
-    timestamps: true
+  {
+    timestamps: true,
   }
 );
 
 // Hash password before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -77,7 +85,6 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (candidate) {
   return bcrypt.compare(candidate, this.password);
 };
-
 
 const User = model("User", userSchema);
 
