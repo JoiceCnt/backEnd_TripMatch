@@ -1,15 +1,89 @@
 const Trip = require('../models/Trip.model.js');
 
 const createTrip = async (req, res, next) => {
-    try {
-        const data = { ...req.body, createdBy: "650c3df58c5c123456789abc" };
-        const trip = new Trip(data);
-        await trip.save();
-        res.status(201).json(trip);
-    } catch (err) {
-        next(err);
+  try {
+    const {
+      title,
+      startDate,
+      endDate,
+      country,
+      countryCode,
+      city,
+      preferences,
+      activities,
+      documents,
+      maxParticipants,
+      heroImageUrl,
+      heroImagePublicId,
+      participants,
+    } = req.body;
+
+    // Validar campos obligatorios
+    if (!title || !startDate || !endDate || !country || !countryCode || !city) {
+      return res.status(400).json({ error: "Missing required fields" });
     }
+
+    // Validar fechas
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (isNaN(start) || isNaN(end)) {
+      return res.status(400).json({ error: "Invalid date format" });
+    }
+    if (end < start) {
+      return res.status(400).json({ error: "endDate must be after startDate" });
+    }
+
+    // Validar preferences
+    const allowedPreferences = ["nature", "concerts_and_events", "gastronomy", "touristic_places"];
+    if (preferences) {
+      const invalidPrefs = preferences.filter(p => !allowedPreferences.includes(p));
+      if (invalidPrefs.length > 0) {
+        return res.status(400).json({ error: "Invalid preferences: " + invalidPrefs.join(", ") });
+      }
+    }
+
+    // Validar actividades (opcional)
+    if (activities) {
+      for (let i = 0; i < activities.length; i++) {
+        const act = activities[i];
+        if (!act.title || !act.when) {
+          return res.status(400).json({ error: `Activity ${i + 1} is missing title or when` });
+        }
+        if (isNaN(new Date(act.when))) {
+          return res.status(400).json({ error: `Activity ${i + 1} has invalid date` });
+        }
+      }
+    }
+
+    // Crear trip con createdBy fijo (hasta que implementemos auth)
+    const tripData = {
+      title,
+      startDate: start,
+      endDate: end,
+      country,
+      countryCode,
+      city,
+      preferences,
+      activities,
+      documents,
+      heroImageUrl,
+      heroImagePublicId,
+      participants,
+      maxParticipants: maxParticipants || 10,
+      createdBy: "650c3df58c5c123456789abc", // temporal
+    };
+
+    const trip = new Trip(tripData);
+    await trip.save();
+
+    res.status(201).json(trip);
+  } catch (err) {
+    console.error("❌ Error en createTrip:", err); // mostrar stack completo
+    res.status(500).json({ error: err.message || "Internal server error" });
+  }
 };
+
+
 
 const getTrips = async (req, res, next) => {
     try {

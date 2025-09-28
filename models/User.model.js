@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
 
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
+
 const userSchema = new Schema(
   {
     username: {

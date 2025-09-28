@@ -29,25 +29,6 @@ const tripSchema = new Schema (
         heroImageUrl: { type: String },
         heroImagePublicId: { type: String },
 
-        documents:  [
-            new Schema(
-                {
-                    name: { type: String, required: true }, 
-                    url: { type: String, required: true }, 
-                    mimeType: { type: String }, 
-                    tag: { 
-                        type: String, 
-                        enum: ["outbound", "return", "other"], 
-                        default: "other" },
-                    sizeBytes: { type: Number },
-                    uploadedBy: { type: Schema.Types.ObjectId, ref: "User" },
-                    uploadedAt: { type: Date, default: Date.now },
-                    cloudinaryPublicId: { type: String },
-                },
-                { _id: false }
-            )
-        ],
-
         createdBy: { 
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'User', 

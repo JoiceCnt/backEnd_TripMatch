@@ -30,7 +30,9 @@ const listPosts = async (_req, res) => {
     const posts = await FeedPost.find()
       .sort({ createdAt: -1 })
       .limit(50)
-      .populate("author", "username name");
+      .populate("author", "username name")
+      .populate("comments.user", "username name");
+
 
     const postsJSON = posts.map((p) => {
       const obj = p.toObject();
