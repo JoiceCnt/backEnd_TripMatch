@@ -39,7 +39,7 @@ const register = async (req, res, next) => {
       //surname,
       //gender,
       //country,
-      //username,
+      username,
       email,
       password,
       //preferences,

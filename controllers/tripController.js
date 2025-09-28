@@ -36,7 +36,6 @@ const createTrip = async (req, res, next) => {
       }
     }
 
-
     const tripData = {
       title,
       startDate: start,
@@ -47,7 +46,7 @@ const createTrip = async (req, res, next) => {
       preferences,
       heroImageUrl,
       heroImagePublicId,
-      createdBy: req.user._id, // usuario logueado
+      createdBy: req.user._id,
     };
 
     const trip = new Trip(tripData);
