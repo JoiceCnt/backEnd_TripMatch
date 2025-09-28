@@ -1,22 +1,25 @@
-//server.js
+// server.js
 require("dotenv").config();
 const mongoose = require("mongoose");
 const app = require("./app");
 
-// connect DB
-const MONGO_URI = process.env.MONGO_URI;
+const MONGODB_URI = process.env.MONGODB_URI; // <- nome certo da env
+const PORT = process.env.PORT || 5005;
+
+if (!MONGODB_URI) {
+  console.error("❌ MONGODB_URI não definido no .env");
+  process.exit(1);
+}
 
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGODB_URI)
   .then(() => {
-    console.log("✅ Conected to MongoDB Atlas");
-
-    const PORT = process.env.PORT || 5005;
+    console.log("✅ Connected to MongoDB");
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("Database connection error:", err);
+    console.error("❌ Database connection error:", err.message);
     process.exit(1);
   });

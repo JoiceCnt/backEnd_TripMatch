@@ -1,29 +1,22 @@
 const mongoose = require("mongoose");
 const { Schema, model } = require("mongoose");
 
-
-const tripSchema = new Schema (
-    {
-        title: { type: String, required: true},
-        preferences:  [{
-            type: String,
-            enum: ["nature", "concerts_and_events", "gastronomy", "touristic_places"],
-        }],
-        activities: [
-            new Schema(  
-                {
-                    when: { type: Date, required: true },
-                    title: { type: String, required: true }, 
-                    location: { type: String },
-                    notes: { type: String },
-                },
-                { _id: false }  
-            )        
+const tripSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    preferences: [
+      {
+        type: String,
+        enum: [
+          "nature",
+          "concerts_and_events",
+          "gastronomy",
+          "touristic_places",
         ],
-        startDate: { type: Date, required: true },
-        endDate: { type: Date, required: true },
-        country: { type: String, required: true},
-        countryCode: { type: String, required: true },
+        startDate: { type: Date, required: false },
+        endDate: { type: Date, required: false },
+        country: { type: String, required: false },
+        countryCode: { type: String, required: false },
         city: { type: String, required: true },
 
         heroImageUrl: { type: String },
@@ -33,23 +26,30 @@ const tripSchema = new Schema (
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'User', 
             required: true 
+      },
+    activities: [
+      new Schema(
+        {
+          when: { type: Date, required: false },
+          title: { type: String, required: false },
+          location: { type: String },
+          notes: { type: String },
         },
-        participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
-        maxParticipants: { type: Number, default: 10 },
-    },
-    {   
-        timestamps: true,
-        toJSON: { virtuals: true },
-        toObject: { virtuals: true }
-    }
-
+        { _id: false }
+      ),
+    ],
+  }]},
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
-
 
 tripSchema.index({ createdBy: 1, startDate: 1 });
 tripSchema.index({ city: 1, countryCode: 1, startDate: 1 });
 
-tripSchema.pre("validate", function(next) {
+tripSchema.pre("validate", function (next) {
   if (this.startDate && this.endDate && this.endDate < this.startDate) {
     return next(new Error("endDate must be after startDate"));
   }
@@ -66,4 +66,3 @@ tripSchema.virtual("status").get(function () {
 const Trip = model("Trip", tripSchema);
 
 module.exports = Trip;
-
