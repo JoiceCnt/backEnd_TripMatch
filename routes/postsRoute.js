@@ -1,15 +1,28 @@
-const express = require('express');
-const isAuth = require('../middlewares/isAuth');
-const { createPost, updatePost, deletePost, listPosts, createResponse } = require('../controllers/postController');
-const Post = require('../models/Post.model');
-const isOwner = require('../middlewares/isOwner');
-
+const express = require("express");
 const router = express.Router();
+const {
+  createPost,
+  listPosts,
+  updatePost,
+  deletePost,
+  toggleLike,
+  addComment,
+  deleteComment,
+  listComments,
+} = require("../controllers/postController");
 
-router.get('/', listPosts);
-router.post('/', isAuth, createPost);
-router.put('/:id', isAuth, isOwner(Post, 'author', 'id'), updatePost);
-router.delete('/:id', isAuth, isOwner(Post, 'author', 'id'), deletePost);
-router.post('/:postId/responses', isAuth, createResponse);
+// Posts
+router.get("/", listPosts);
+router.post("/", createPost);
+router.put("/:id", updatePost);
+router.delete("/:id", deletePost);
+
+// Likes
+router.post("/:postId/like", toggleLike);
+
+// Comments
+router.post("/:postId/comments", addComment);
+router.delete("/:postId/comments/:commentId", deleteComment);
+router.get("/:postId/comments", listComments);
 
 module.exports = router;

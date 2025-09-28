@@ -14,6 +14,7 @@ const userRoutes = require("./routes/usersRoute");
 const tripRoutes = require("./routes/tripsRoute");
 const postRoutes = require("./routes/postsRoute");
 const locationRoutes = require("./routes/locationsRoute");
+const activitiesRoute = require("./routes/activitiesRoute");
 
 const app = express();
 
@@ -39,6 +40,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/locations", locationRoutes);
+app.use("/api/activities", activitiesRoute);
+
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 app.use(notFoundHandler);

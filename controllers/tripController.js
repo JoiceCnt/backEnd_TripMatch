@@ -54,6 +54,36 @@ const getTripById = async (req, res, next) => {
   }
 };
 
+// DELETE /api/trips/:id
+const deleteTrip = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const trip = await Trip.findByIdAndDelete(id);
+    if (!trip) return res.status(404).json({ message: "Trip not found" });
+    res.json({ message: "Trip deleted successfully" });
+  } catch (err) {
+    console.error("❌ Error deleting trip:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// PUT /api/trips/:id
+const updateTrip = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedTrip = await Trip.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updatedTrip) return res.status(404).json({ message: "Trip not found" });
+    res.json(updatedTrip);
+  } catch (err) {
+    console.error("❌ Error updating trip:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 //simple matching: find trips in the same city with overlapping dates and shared
 const matchTrips = async (req, res, next) => {
   try {
@@ -95,6 +125,8 @@ module.exports = {
   createTrip,
   getTrips,
   getTripById,
+  deleteTrip,
+  updateTrip,
   matchTrips,
   topTrips,
 };
