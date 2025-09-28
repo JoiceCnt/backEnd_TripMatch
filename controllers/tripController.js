@@ -11,7 +11,6 @@ const createTrip = async (req, res, next) => {
       countryCode,
       city,
       preferences,
-      activities,
       heroImageUrl,
       heroImagePublicId,
     } = req.body;
@@ -37,17 +36,6 @@ const createTrip = async (req, res, next) => {
       }
     }
 
-    if (activities) {
-      for (let i = 0; i < activities.length; i++) {
-        const act = activities[i];
-        if (!act.title || !act.when) {
-          return res.status(400).json({ error: `Activity ${i + 1} is missing title or when` });
-        }
-        if (isNaN(new Date(act.when))) {
-          return res.status(400).json({ error: `Activity ${i + 1} has invalid date` });
-        }
-      }
-    }
 
     const tripData = {
       title,
@@ -57,7 +45,6 @@ const createTrip = async (req, res, next) => {
       countryCode,
       city,
       preferences,
-      activities,
       heroImageUrl,
       heroImagePublicId,
       createdBy: req.user._id, // usuario logueado

@@ -27,17 +27,6 @@ const tripSchema = new Schema(
             ref: 'User', 
             required: true 
       },
-    activities: [
-      new Schema(
-        {
-          when: { type: Date, required: false },
-          title: { type: String, required: false },
-          location: { type: String },
-          notes: { type: String },
-        },
-        { _id: false }
-      ),
-    ],
   }]},
   {
     timestamps: true,

@@ -14,7 +14,6 @@ const userRoutes = require("./routes/usersRoute");
 const tripRoutes = require("./routes/tripsRoute");
 const postRoutes = require("./routes/postsRoute");
 const locationRoutes = require("./routes/locationsRoute");
-const activitiesRoute = require("./routes/activitiesRoute");
 
 const app = express();
 
@@ -24,9 +23,9 @@ const { notFoundHandler, errorHandler } = require("./error-handling/index");
 //general middlewares
 app.use(helmet());
 app.use(cors({
-  origin: "http://localhost:5173", // URL de tu Vite frontend
+  origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
 app.use(express.json());
@@ -45,7 +44,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/locations", locationRoutes);
-app.use("/api/activities", activitiesRoute);
 
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes

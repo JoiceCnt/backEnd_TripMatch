@@ -3,7 +3,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const app = require("./app");
 
-const MONGODB_URI = process.env.MONGODB_URI; // <- nome certo da env
+const MONGODB_URI = process.env.MONGODB_URI;
 const PORT = process.env.PORT || 5005;
 
 if (!MONGODB_URI) {

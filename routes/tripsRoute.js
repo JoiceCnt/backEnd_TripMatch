@@ -11,7 +11,7 @@ const isOwner = require("../middlewares/isOwner");
 
 const router = express.Router();
 
-router.post("/", createTrip);
+router.post("/", isAuth, createTrip);
 router.get("/", getTrips);
 router.get("/:id", getTripById);
 router.get("/:id/match", matchTrips);
