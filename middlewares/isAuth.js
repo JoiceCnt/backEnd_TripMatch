@@ -21,11 +21,13 @@ const isAuth = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid token" });
     }
     
-    // Verificar token
     let decoded;
+    // Verificar token
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
       console.log("📨 Payload decodificado:", decoded);
+
     } catch (err) {
       console.log("❌ Error verificando token:", err.message);
       if (err.name === 'TokenExpiredError') {

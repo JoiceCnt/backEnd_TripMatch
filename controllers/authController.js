@@ -1,8 +1,24 @@
 const User = require("../models/User.model.js");
 const { signToken } = require("../utils/jwt.js");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // carpeta donde se guardan fotos
+  },
+  filename: (req, file, cb) => {
+    const timestamp = Date.now();
+    const originalName = file.originalname.replace(/\s+/g, "_");
+    cb(null, `${timestamp}_${originalName}`);
+  },
+});
+const upload = multer({ storage });
+
 
 const register = async (req, res, next) => {
   try {
+    const photoFile = req.file;
+
     const {
       name,
       surname,
@@ -34,6 +50,7 @@ const register = async (req, res, next) => {
       email,
       password,
       preferences,
+      photo: photoFile ? photoFile.filename : null,
     });
     await user.save();
 
@@ -50,6 +67,7 @@ const register = async (req, res, next) => {
         country: user.country,
         gender: user.gender,
         preferences: user.preferences,
+        photo: user.photo,
       },
     });
   } catch (err) {
@@ -88,6 +106,7 @@ const login = async (req, res, next) => {
         country: user.country,
         gender: user.gender,
         preferences: user.preferences,
+        photo: user.photo,
       },
     });
   } catch (err) {
@@ -95,4 +114,4 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login };
+module.exports = { register, login, upload };
