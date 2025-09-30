@@ -12,7 +12,6 @@ const isAuth = async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid authorization header' });
     }
     
-
     const token = header.split(" ")[1];
     console.log("🔑 Token extraído:", token);
 
@@ -58,6 +57,8 @@ const isAuth = async (req, res, next) => {
     return res.status(401).json({ message: 'Authentication failed' });
   }
 };
+
+
 
 module.exports = isAuth;
 

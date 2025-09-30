@@ -1,5 +1,6 @@
 const express = require("express");
 const isAuth = require("../middlewares/isAuth");
+const isOwner = require("../middlewares/isOwner");
 const {
   createTrip,
   getTrips,
@@ -12,9 +13,9 @@ const isOwner = require("../middlewares/isOwner");
 const router = express.Router();
 
 router.post("/", isAuth, createTrip);
-router.get("/", isAuth, getTrips);
-router.get("/:id", isAuth, getTripById);
-router.get("/:id/match", isAuth, matchTrips);
+router.get("/", isAuth, isOwner(Post, "author", "id"), getTrips);
+router.get("/:id", isAuth, isOwner(Post, "author", "id"), getTripById);
+router.get("/:id/match", isAuth, isOwner(Post, "author", "id"), matchTrips);
 
 
 
