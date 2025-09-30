@@ -1,39 +1,26 @@
 const mongoose = require("mongoose");
 const { Schema, model } = require("mongoose");
 
-const tripSchema = new Schema(
-  {
-    title: { type: String, required: true },
-    preferences: [
-      {
-        type: String,
-        enum: [
-          "nature",
-          "concerts_and_events",
-          "gastronomy",
-          "touristic_places",
-        ],
-        startDate: { type: Date, required: false },
-        endDate: { type: Date, required: false },
-        country: { type: String, required: false },
-        countryCode: { type: String, required: false },
-        city: { type: String, required: true },
+const tripSchema = new Schema({
+  title: { type: String, required: true },
+  preferences: [{
+    type: String,
+    enum: ["nature", "concerts_and_events", "gastronomy", "touristic_places"],
+  }],
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
+  country: { type: String },
+  countryCode: { type: String },
+  city: { type: String, required: true },
+  heroImageUrl: { type: String },
+  heroImagePublicId: { type: String },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+}, {
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+});
 
-        heroImageUrl: { type: String },
-        heroImagePublicId: { type: String },
-
-        createdBy: { 
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'User', 
-            required: true 
-      },
-  }]},
-  {
-    timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-  }
-);
 
 tripSchema.index({ createdBy: 1, startDate: 1 });
 tripSchema.index({ city: 1, countryCode: 1, startDate: 1 });

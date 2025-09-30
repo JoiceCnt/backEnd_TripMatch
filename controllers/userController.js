@@ -1,6 +1,5 @@
 // controllers/userController.js
 const User = require("../models/User.model");
-const { recompileSchema } = require("../models/User.model");
 
 // Obtener todos los usuarios
 const getUsers = async (req, res) => {
