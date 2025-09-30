@@ -2,20 +2,11 @@ const User = require("../models/User.model.js");
 const { signToken } = require("../utils/jwt.js");
 const multer = require("multer");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // carpeta donde se guardan fotos
-  },
-  filename: (req, file, cb) => {
-    const timestamp = Date.now();
-    const originalName = file.originalname.replace(/\s+/g, "_");
-    cb(null, `${timestamp}_${originalName}`);
-  },
-});
-const upload = multer({ storage });
+const uploader = require("../middlewares/cloudinary.config");
 
 const register = async (req, res, next) => {
   try {
+    console.log("📸 File recebido do Cloudinary:", req.file);
     const photoFile = req.file;
 
     const { name, surname, gender, country, email, password, preferences } =
@@ -42,7 +33,7 @@ const register = async (req, res, next) => {
       email,
       password,
       preferences,
-      photo: photoFile ? photoFile.filename : null,
+      photo: req.file ? req.file.path : null,
     });
     await user.save();
 
@@ -98,12 +89,13 @@ const login = async (req, res, next) => {
         country: user.country,
         gender: user.gender,
         preferences: user.preferences,
-        photo: user.photo,
+        photo: user.photo || user.profilePic || null,
       },
     });
   } catch (err) {
+    console.log("❌ Erro no register:", err);
     next(err);
   }
 };
 
-module.exports = { register, login, upload };
+module.exports = { register, login };

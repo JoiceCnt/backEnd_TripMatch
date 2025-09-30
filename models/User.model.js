@@ -29,9 +29,9 @@ const userSchema = new Schema(
     },
     country: { type: String, trim: false },
 
-    profilePic: {
-      type: String,
-      default: "/images/icono_profile.png",
+    photo: {
+      type: String, // Cloudinary URL ou null
+      default: null, // sem placeholder local
     },
     photoUrl: { type: String },
     photoPublicId: { type: String },
