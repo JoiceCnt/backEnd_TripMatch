@@ -8,14 +8,13 @@ const {
   matchTrips,
 } = require("../controllers/tripController");
 const Trip = require("../models/Trip.model");
-const isOwner = require("../middlewares/isOwner");
 
 const router = express.Router();
 
 router.post("/", isAuth, createTrip);
-router.get("/", isAuth, isOwner(Post, "author", "id"), getTrips);
-router.get("/:id", isAuth, isOwner(Post, "author", "id"), getTripById);
-router.get("/:id/match", isAuth, isOwner(Post, "author", "id"), matchTrips);
+router.get("/", isAuth, isOwner(Trip, "author", "id"), getTrips);
+router.get("/:id", isAuth, isOwner(Trip, "author", "id"), getTripById);
+router.get("/:id/match", isAuth, isOwner(Trip, "author", "id"), matchTrips);
 
 
 
