@@ -2,18 +2,15 @@ const mongoose = require("mongoose");
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
 
-
-
 const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "Usermane is required."],
-      unique: true,
+      required: true,
       lowercase: true,
       trim: true,
       minLength: 3,
-      maxLength: 32,
+      maxLength: 64,
     },
     email: {
       type: String,
@@ -38,17 +35,12 @@ const userSchema = new Schema(
     },
     photoUrl: { type: String },
     photoPublicId: { type: String },
-    preferences: [
-      {
-        type: String,
-        enum: [
-          "nature",
-          "concerts_and_events",
-          "gastronomy",
-          "touristic_places",
-        ],
-      },
-    ],
+    preferences: {
+      nature: { type: Boolean, default: false },
+      concerts_and_events: { type: Boolean, default: false },
+      gastronomy: { type: Boolean, default: false },
+      touristic_places: { type: Boolean, default: false },
+    },
     favoriteCities: [{ type: String }],
 
     tripsCreated: [{ type: Schema.Types.ObjectId, ref: "Trip" }],
@@ -88,4 +80,3 @@ userSchema.methods.comparePassword = async function (candidate) {
 const User = model("User", userSchema);
 
 module.exports = User;
-

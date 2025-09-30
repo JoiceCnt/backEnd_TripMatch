@@ -1,48 +1,48 @@
 const User = require("../models/User.model.js");
 const { signToken } = require("../utils/jwt.js");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // carpeta donde se guardan fotos
+  },
+  filename: (req, file, cb) => {
+    const timestamp = Date.now();
+    const originalName = file.originalname.replace(/\s+/g, "_");
+    cb(null, `${timestamp}_${originalName}`);
+  },
+});
+const upload = multer({ storage });
 
 const register = async (req, res, next) => {
   try {
-    const {
-      name,
-      surname,
-      gender,
-      country,
-      username,
-      email,
-      password,
-      preferences,
-    } = req.body;
+    const photoFile = req.file;
+
+    const { name, surname, gender, country, email, password, preferences } =
+      req.body;
 
     // Validate required fields
-    if (!email || !password || !name) {
+    if (!email || !password) {
       return res
         .status(400)
-        .json({ message: "Username, email and password are required" });
+        .json({ message: "Email and password are required" });
     }
 
-    // Check if email is already registered
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
       return res.status(409).json({ message: "Email already registered" });
     }
 
-    // Check if username is already taken
-    const existingUsername = await User.findOne({ username });
-    if (existingUsername) {
-      return res.status(409).json({ message: "Username already taken" });
-    }
-
     //create new user
     const user = new User({
       name,
-      //surname,
-      //gender,
-      //country,
-      username,
+      surname,
+      gender,
+      country,
       email,
       password,
-      //preferences,
+      preferences,
+      photo: photoFile ? photoFile.filename : null,
     });
     await user.save();
 
@@ -53,13 +53,13 @@ const register = async (req, res, next) => {
       token,
       user: {
         id: user._id,
-        username: user.username,
         email: user.email,
         name: user.name,
         surname: user.surname,
         country: user.country,
         gender: user.gender,
         preferences: user.preferences,
+        photo: user.photo,
       },
     });
   } catch (err) {
@@ -92,13 +92,13 @@ const login = async (req, res, next) => {
       token,
       user: {
         id: user._id,
-        username: user.name,
         email: user.email,
         name: user.name,
         surname: user.surname,
         country: user.country,
         gender: user.gender,
         preferences: user.preferences,
+        photo: user.photo,
       },
     });
   } catch (err) {
@@ -106,4 +106,4 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login };
+module.exports = { register, login, upload };
